@@ -17,6 +17,7 @@ function Navbar() {
       <div className="flex items-center gap-4">
         {user ? (
           <>
+            <Link to="/profile">Profile</Link>
             <Link to="/dashboard">Dashboard</Link>
 
             <button

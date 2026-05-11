@@ -134,6 +134,9 @@ const updateProfile = async (req, res) => {
       req.body.personality || user.personality;
 
     user.hobbies = req.body.hobbies || user.hobbies;
+      if (!user.habits) {
+        user.habits = {};
+      }
 
     // Habits
     user.habits.sleepTime =

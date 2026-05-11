@@ -5,6 +5,7 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Navbar from "./components/layout/Navbar";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   return (
@@ -22,7 +23,17 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              {" "}
+              <Dashboard />{" "}
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
