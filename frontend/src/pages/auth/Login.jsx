@@ -16,6 +16,7 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  // Handle Input Change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -23,23 +24,33 @@ function Login() {
     });
   };
 
+  // Handle Login
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       setLoading(true);
 
-      const res = await API.post("/auth/login", formData);
+      const res = await API.post(
+        "/auth/login",
+        formData
+      );
 
       // Save user in context
       login(res.data.user);
 
       // Save token
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
 
-      navigate("/dashboard");
+      // Redirect to Profile
+      navigate("/profile");
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(
+        error.response?.data?.message
+      );
     } finally {
       setLoading(false);
     }
@@ -59,6 +70,7 @@ function Login() {
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           className="w-full p-3 mb-4 rounded bg-zinc-800"
         />
@@ -67,6 +79,7 @@ function Login() {
           type="password"
           name="password"
           placeholder="Password"
+          value={formData.password}
           onChange={handleChange}
           className="w-full p-3 mb-4 rounded bg-zinc-800"
         />
@@ -75,7 +88,9 @@ function Login() {
           type="submit"
           className="w-full bg-white text-black p-3 rounded font-semibold"
         >
-          {loading ? "Loading..." : "Login"}
+          {loading
+            ? "Loading..."
+            : "Login"}
         </button>
       </form>
     </div>
@@ -83,3 +98,4 @@ function Login() {
 }
 
 export default Login;
+

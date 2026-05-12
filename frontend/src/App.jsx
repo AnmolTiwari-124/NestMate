@@ -1,3 +1,4 @@
+import Chat from "./pages/chat/chat";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/public/Home";
@@ -6,6 +7,7 @@ import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Navbar from "./components/layout/Navbar";
 import Profile from "./pages/profile/Profile";
+import Matches from "./pages/matches/Matches";
 
 function App() {
   return (
@@ -23,17 +25,34 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              {" "}
-              <Dashboard />{" "}
+              <Dashboard />
             </ProtectedRoute>
           }
         />
-        
+
         <Route
           path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/matches"
+          element={
+            <ProtectedRoute>
+              <Matches />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chat />
             </ProtectedRoute>
           }
         />

@@ -1,3 +1,4 @@
+const calculateMatch = require("../utils/calculateMatch");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -169,9 +170,51 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    // Current logged in user
+    const currentUser = await User.findById(
+      req.user._id
+    );
+
+    // Other users
+    const users = await User.find({
+      _id: { $ne: req.user._id },
+    }).select("-password");
+
+    // Add compatibility score
+    const matchedUsers = users.map((user) => {
+      const matchData = calculateMatch(
+        currentUser,
+        user
+      );
+
+      return {
+        ...user.toObject(),
+        compatibilityScore: matchData.score,
+        commonHobbies: matchData.commonHobbies,
+        insights: matchData.insights,
+      };
+    });
+
+    // Sort highest matches first
+    matchedUsers.sort(
+      (a, b) =>
+        b.compatibilityScore -
+        a.compatibilityScore
+    );
+
+    res.status(200).json(matchedUsers);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   updateProfile,
+  getAllUsers,
 };

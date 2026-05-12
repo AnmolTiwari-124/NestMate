@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {
+  getAllUsers,
   registerUser,
   loginUser,
   getMe,
@@ -17,5 +18,6 @@ router.post("/login", loginUser);
 // Protected Route
 router.get("/me", protect, getMe);
 router.put("/profile", protect, updateProfile);
+router.get("/users", protect, getAllUsers);
 
 module.exports = router;
