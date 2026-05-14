@@ -1,4 +1,4 @@
-import Chat from "./pages/chat/chat";
+import Chat from "./pages/chat/Chat";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/public/Home";

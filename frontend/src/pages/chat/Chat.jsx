@@ -1,14 +1,33 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import API from "../../services/api";
+import { AuthContext } from "../../context/AuthContext";
 
 const socket = io("http://localhost:5000");
+const ROOM_ID = "general";
 
 function Chat() {
+  const { user } = useContext(AuthContext);
+
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const res = await API.get(`/messages/${ROOM_ID}`);
+
+        setMessages(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMessages();
+
+    socket.emit("joinRoom", ROOM_ID);
+
     socket.on(
       "receiveMessage",
       (newMessage) => {
@@ -27,7 +46,11 @@ function Chat() {
   const sendMessage = () => {
     if (!message.trim()) return;
 
-    socket.emit("sendMessage", message);
+    socket.emit("sendMessage", {
+      roomId: ROOM_ID,
+      message,
+      sender: user?.name || "User",
+    });
 
     setMessage("");
   };
@@ -42,10 +65,14 @@ function Chat() {
       <div className="bg-zinc-900 rounded-xl p-5 h-[500px] overflow-y-auto mb-5">
         {messages.map((msg, index) => (
           <div
-            key={index}
+            key={msg._id || index}
             className="bg-zinc-800 p-3 rounded-lg mb-3"
           >
-            {msg}
+            <p className="text-sm text-zinc-400 mb-1">
+              {msg.sender}
+            </p>
+
+            <p>{msg.text}</p>
           </div>
         ))}
       </div>

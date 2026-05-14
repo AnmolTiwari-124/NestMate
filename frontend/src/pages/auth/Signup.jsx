@@ -34,9 +34,11 @@ function Signup() {
 
       login(res.data.user);
 
+      localStorage.setItem("token", res.data.token);
+
       navigate("/dashboard");
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error.response?.data?.message);
     } finally {
       setLoading(false);
     }
