@@ -1,22 +1,41 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import API from "../../services/api";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000");
 
 function Matches() {
+
   const [users, setUsers] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [personalityFilter, setPersonalityFilter] = useState("");
   const [budgetFilter, setBudgetFilter] = useState("");
 
   useEffect(() => {
+    const currentUser = JSON.parse(
+      localStorage.getItem("user")
+    );
+
+    socket.emit(
+      "userOnline",
+      currentUser.id
+    );
+
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token");
 
-        const res = await API.get("/auth/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await API.get(
+          "/auth/users",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setUsers(res.data);
       } catch (error) {
@@ -25,6 +44,14 @@ function Matches() {
     };
 
     fetchUsers();
+
+    socket.on("onlineUsers", (users) => {
+      setOnlineUsers(users);
+    });
+
+    return () => {
+      socket.off("onlineUsers");
+    };
   }, []);
 
   const filteredUsers = users.filter((user) => {
@@ -88,6 +115,20 @@ function Matches() {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-bold">{user.name}</h2>
+              <div className="flex items-center gap-2 mt-1">
+                <div
+                  className={`w-3 h-3 rounded-full ${onlineUsers.includes(user._id)
+                      ? "bg-green-500"
+                      : "bg-zinc-600"
+                    }`}
+                />
+
+                <span className="text-sm text-zinc-400">
+                  {onlineUsers.includes(user._id)
+                    ? "Online"
+                    : "Offline"}
+                </span>
+              </div>
 
               <div className="bg-green-500 text-black px-3 py-1 rounded-full font-bold">
                 {user.compatibilityScore}%
@@ -118,7 +159,7 @@ function Matches() {
                 ))}
               </div>
             </div>
-            
+
             <div className="mt-5">
               <h3 className="font-semibold mb-2">Common Interests</h3>
 
@@ -146,6 +187,12 @@ function Matches() {
 
               <p>🍽 Food: {user.habits?.foodPreference}</p>
             </div>
+            <Link
+              to={`/chat/${user._id}`}
+              className="block mt-6 bg-white text-black text-center py-3 rounded-xl font-semibold"
+            >
+              Chat
+            </Link>
           </div>
         ))}
       </div>
@@ -154,3 +201,4 @@ function Matches() {
 }
 
 export default Matches;
+
