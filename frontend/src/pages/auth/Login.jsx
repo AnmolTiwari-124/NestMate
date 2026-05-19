@@ -1,7 +1,9 @@
 import { useState, useContext } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 import API from "../../services/api";
+
 import { AuthContext } from "../../context/AuthContext";
 
 function Login() {
@@ -45,7 +47,14 @@ function Login() {
         res.data.token
       );
 
-      // Redirect to Profile
+      // IMPORTANT
+      // Save user for chat system
+      localStorage.setItem(
+        "user",
+        JSON.stringify(res.data.user)
+      );
+
+      // Redirect
       navigate("/profile");
     } catch (error) {
       console.log(
@@ -98,4 +107,3 @@ function Login() {
 }
 
 export default Login;
-

@@ -2,11 +2,12 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const http = require("http");
-const Message = require("./models/Message");
+
 const { Server } = require("socket.io");
 
 const connectDB = require("./config/db");
 
+const Message = require("./models/Message");
 
 dotenv.config();
 
@@ -26,15 +27,38 @@ const io = new Server(server, {
   },
 });
 
+// Store Online Users
+let onlineUsers = [];
+
 // Socket Connection
 io.on("connection", (socket) => {
   console.log("User connected");
+
+  // User Online
+  socket.on("userOnline", (userId) => {
+    socket.userId = userId;
+
+    // Avoid duplicates
+    if (!onlineUsers.includes(userId)) {
+      onlineUsers.push(userId);
+    }
+
+    // Send updated users
+    io.emit("onlineUsers", onlineUsers);
+
+    console.log(
+      "Online Users:",
+      onlineUsers
+    );
+  });
 
   // Join Room
   socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
 
-    console.log(`Joined room: ${roomId}`);
+    console.log(
+      `Joined room: ${roomId}`
+    );
   });
 
   // Send Message
@@ -64,6 +88,15 @@ io.on("connection", (socket) => {
   // Disconnect
   socket.on("disconnect", () => {
     console.log("User disconnected");
+
+    onlineUsers = onlineUsers.filter(
+      (id) => id !== socket.userId
+    );
+
+    io.emit(
+      "onlineUsers",
+      onlineUsers
+    );
   });
 });
 
@@ -92,5 +125,7 @@ const PORT = process.env.PORT || 5000;
 
 // Start Server
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}); 
+  console.log(
+    `Server running on port ${PORT}`
+  );
+});
