@@ -1,4 +1,4 @@
-import Chat from "./pages/chat/Chat";
+
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/public/Home";
@@ -8,6 +8,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Navbar from "./components/layout/Navbar";
 import Profile from "./pages/profile/Profile";
 import Matches from "./pages/matches/Matches";
+import Chat from "./pages/chat/Chat";
 
 function App() {
   return (
@@ -51,9 +52,7 @@ function App() {
         <Route
          path="/chat/:userId"
           element={
-            <ProtectedRoute>
-              <Chat />
-            </ProtectedRoute>
+          <Chat />
           }
         />
       </Routes>
@@ -61,3 +60,5 @@ function App() {
   );
 }
 export default App;
+
+ 

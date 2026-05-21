@@ -14,10 +14,25 @@ const messageSchema = new mongoose.Schema(
       trim: true,
     },
 
+    senderName: {
+      type: String,
+      trim: true,
+    },
+
+    receiver: {
+      type: String,
+      trim: true,
+    },
+
     text: {
       type: String,
       required: true,
       trim: true,
+    },
+
+    read: {
+      type: Boolean,
+      default: false,
     },
   },
   {

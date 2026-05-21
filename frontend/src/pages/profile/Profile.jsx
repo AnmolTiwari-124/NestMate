@@ -72,20 +72,6 @@ function Profile() {
     });
   };
 
-  // Handle habits
-  const handleHabitsChange = (e) => {
-    setFormData({
-      ...formData,
-      habits: {
-        ...formData.habits,
-        [e.target.name]:
-          e.target.type === "checkbox"
-            ? e.target.checked
-            : e.target.value,
-      },
-    });
-  };
-
   // Submit profile
   const handleSubmit = async (e) => {
     e.preventDefault();

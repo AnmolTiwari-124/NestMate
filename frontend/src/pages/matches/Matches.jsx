@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { MessageNotificationsContext } from "../../context/MessageNotificationsContextValue";
 import API from "../../services/api";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:5000");
+import socket from "../../services/socket";
 
 function Matches() {
+  const { unreadBySender } = useContext(
+    MessageNotificationsContext
+  );
 
   const [users, setUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -18,10 +20,12 @@ function Matches() {
       localStorage.getItem("user")
     );
 
-    socket.emit(
-      "userOnline",
-      currentUser.id
-    );
+    if (currentUser?.id || currentUser?._id) {
+      socket.emit(
+        "userOnline",
+        currentUser.id || currentUser._id
+      );
+    }
 
     const fetchUsers = async () => {
       try {
@@ -110,10 +114,16 @@ function Matches() {
         {filteredUsers.map((user) => (
           <div
             key={user._id}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-white transition"
+            className="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-white transition"
           >
+            {unreadBySender[user._id]?.count > 0 && (
+              <div className="absolute right-4 top-4 flex h-6 min-w-6 items-center justify-center rounded-full bg-green-500 px-2 text-xs font-bold text-black">
+                {unreadBySender[user._id].count}
+              </div>
+            )}
+
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between gap-3 mb-4 pr-8">
               <h2 className="text-2xl font-bold">{user.name}</h2>
               <div className="flex items-center gap-2 mt-1">
                 <div
@@ -189,9 +199,14 @@ function Matches() {
             </div>
             <Link
               to={`/chat/${user._id}`}
-              className="block mt-6 bg-white text-black text-center py-3 rounded-xl font-semibold"
+              className="relative block mt-6 bg-white text-black text-center py-3 rounded-xl font-semibold"
             >
               Chat
+              {unreadBySender[user._id]?.count > 0 && (
+                <span className="absolute right-4 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-green-500 px-1 text-xs font-bold text-black ring-2 ring-white">
+                  {unreadBySender[user._id].count}
+                </span>
+              )}
             </Link>
           </div>
         ))}
