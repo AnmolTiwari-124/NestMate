@@ -1,6 +1,10 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContextValue";
 
 function Home() {
+  const { user } = useContext(AuthContext);
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center text-center px-6">
       <h1 className="text-6xl font-bold mb-6">
@@ -13,19 +17,30 @@ function Home() {
       </p>
 
       <div className="flex gap-4">
-        <Link
-          to="/signup"
-          className="bg-white text-black px-6 py-3 rounded font-semibold"
-        >
-          Get Started
-        </Link>
+        {user ? (
+          <Link
+            to={user.role === "admin" ? "/admin" : "/dashboard"}
+            className="bg-white text-black px-6 py-3 rounded font-semibold"
+          >
+            Go to Dashboard
+          </Link>
+        ) : (
+          <>
+            <Link
+              to="/register"
+              className="bg-white text-black px-6 py-3 rounded font-semibold"
+            >
+              Register
+            </Link>
 
-        <Link
-          to="/login"
-          className="border border-white px-6 py-3 rounded"
-        >
-          Login
-        </Link>
+            <Link
+              to="/login"
+              className="border border-white px-6 py-3 rounded"
+            >
+              Login
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

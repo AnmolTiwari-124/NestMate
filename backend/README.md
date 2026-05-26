@@ -1,6 +1,6 @@
-RoomSync
+NestMate
 
-A full-stack AI-powered roommate and PG/flatmate matching platform built using the MERN stack (MongoDB, Express.js, React, Node.js). RoomSync helps users discover compatible roommates, shared accommodations, and rental spaces based on lifestyle preferences, budget, location, and personality compatibility—providing a smarter and more personalized living experience.
+A full-stack AI-powered roommate and PG/flatmate matching platform built using the MERN stack (MongoDB, Express.js, React, Node.js). NestMate helps users discover compatible roommates, shared accommodations, and rental spaces based on lifestyle preferences, budget, location, and personality compatibility—providing a smarter and more personalized living experience.
 
 🔥 Features
 
@@ -32,8 +32,8 @@ bcrypt for password hashing
 
 🚀 Getting Started
 1. Clone the Repository
-git clone https://github.com/your-username/RoomSync.git
-cd RoomSync
+git clone https://github.com/AnmolTiwari-124/NestMate.git
+cd NestMate
 📦 Frontend Setup
 cd frontend
 npm install

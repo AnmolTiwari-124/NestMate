@@ -3,6 +3,18 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const createToken = (user) =>
+  jwt.sign(
+    {
+      id: user._id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
+
 // REGISTER USER
 const registerUser = async (req, res) => {
   try {
@@ -36,15 +48,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    const token = createToken(user);
 
     res.status(201).json({
       message: "User registered successfully",
@@ -84,6 +88,12 @@ const loginUser = async (req, res) => {
       });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Your account has been banned. Please contact support.",
+      });
+    }
+
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -94,15 +104,14 @@ const loginUser = async (req, res) => {
     }
 
     // Generate JWT
-    const token = jwt.sign(
-      {
-        id: user._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
+    if (!["user", "admin"].includes(user.role)) {
+      user.role = "user";
+    }
+
+    user.lastLogin = new Date();
+    await user.save();
+
+    const token = createToken(user);
     res.status(200).json({
       message: "Login successful",
       token,
@@ -191,6 +200,8 @@ const getAllUsers = async (req, res) => {
     // Other users
     const users = await User.find({
       _id: { $ne: req.user._id },
+      role: "user",
+      isActive: true,
     }).select("-password");
 
     // Add compatibility score

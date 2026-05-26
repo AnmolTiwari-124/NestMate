@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContextValue";
 import { MessageNotificationsContext } from "../../context/MessageNotificationsContextValue";
 import API from "../../services/api";
 import socket from "../../services/socket";
 
 function Matches() {
+  const { user: currentUser } = useContext(AuthContext);
   const { unreadBySender } = useContext(
     MessageNotificationsContext
   );
@@ -16,10 +18,6 @@ function Matches() {
   const [budgetFilter, setBudgetFilter] = useState("");
 
   useEffect(() => {
-    const currentUser = JSON.parse(
-      localStorage.getItem("user")
-    );
-
     if (currentUser?.id || currentUser?._id) {
       socket.emit(
         "userOnline",
@@ -29,17 +27,7 @@ function Matches() {
 
     const fetchUsers = async () => {
       try {
-        const token =
-          localStorage.getItem("token");
-
-        const res = await API.get(
-          "/auth/users",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await API.get("/auth/users");
 
         setUsers(res.data);
       } catch (error) {
@@ -56,7 +44,7 @@ function Matches() {
     return () => {
       socket.off("onlineUsers");
     };
-  }, []);
+  }, [currentUser]);
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -71,6 +59,25 @@ function Matches() {
 
     return matchesSearch && matchesPersonality && matchesBudget;
   });
+
+  const handleReportUser = async (user) => {
+    const reason = window.prompt(`Why are you reporting ${user.name}?`);
+
+    if (!reason) {
+      return;
+    }
+
+    try {
+      await API.post("/reports", {
+        reportedUser: user._id,
+        reason,
+      });
+
+      window.alert("Report submitted.");
+    } catch (error) {
+      window.alert(error.response?.data?.message || "Unable to submit report.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
@@ -197,17 +204,27 @@ function Matches() {
 
               <p>🍽 Food: {user.habits?.foodPreference}</p>
             </div>
-            <Link
-              to={`/chat/${user._id}`}
-              className="relative block mt-6 bg-white text-black text-center py-3 rounded-xl font-semibold"
-            >
-              Chat
-              {unreadBySender[user._id]?.count > 0 && (
-                <span className="absolute right-4 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-green-500 px-1 text-xs font-bold text-black ring-2 ring-white">
-                  {unreadBySender[user._id].count}
-                </span>
-              )}
-            </Link>
+            <div className="mt-6 grid grid-cols-[1fr_auto] gap-2">
+              <Link
+                to={`/chat/${user._id}`}
+                className="relative block bg-white text-black text-center py-3 rounded-xl font-semibold"
+              >
+                Chat
+                {unreadBySender[user._id]?.count > 0 && (
+                  <span className="absolute right-4 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-green-500 px-1 text-xs font-bold text-black ring-2 ring-white">
+                    {unreadBySender[user._id].count}
+                  </span>
+                )}
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => handleReportUser(user)}
+                className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-200 hover:border-white"
+              >
+                Report
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -24,8 +24,27 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["user", "owner", "admin"],
+      enum: ["user", "admin"],
       default: "user",
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+
+    bannedAt: {
+      type: Date,
+    },
+
+    banReason: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+    },
+
+    lastLogin: {
+      type: Date,
     },
 
     age: {

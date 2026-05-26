@@ -1,6 +1,9 @@
 
-import { Routes, Route } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminProtectedRoute from "./routes/AdminProtectedRoute";
+import { AuthContext } from "./context/AuthContextValue";
 import Home from "./pages/public/Home";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -9,11 +12,25 @@ import Navbar from "./components/layout/Navbar";
 import Profile from "./pages/profile/Profile";
 import Matches from "./pages/matches/Matches";
 import Chat from "./pages/chat/Chat";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminUsers from "./pages/admin/Users";
 
 function App() {
+  const location = useLocation();
+  const { authLoading } = useContext(AuthContext);
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Checking session...
+      </div>
+    );
+  }
+
   return (
     <>
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -21,6 +38,8 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/signup" element={<Signup />} />
+
+        <Route path="/register" element={<Signup />} />
 
         <Route
           path="/dashboard"
@@ -50,9 +69,47 @@ function App() {
         />
 
         <Route
-         path="/chat/:userId"
+          path="/chats"
           element={
-          <Chat />
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/chat/:userId"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <AdminProtectedRoute>
+              <AdminUsers />
+            </AdminProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/*"
+          element={
+            <AdminProtectedRoute>
+              <Navigate to="/admin" replace />
+            </AdminProtectedRoute>
           }
         />
       </Routes>

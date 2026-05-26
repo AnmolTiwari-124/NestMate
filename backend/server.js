@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const http = require("http");
+const path = require("path");
 
 const { Server } = require("socket.io");
 
@@ -9,7 +10,8 @@ const connectDB = require("./config/db");
 
 const Message = require("./models/Message");
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 // Connect Database
 connectDB();
@@ -276,6 +278,21 @@ app.use(
 app.use(
   "/api/messages",
   require("./routes/messageRoutes")
+);
+
+app.use(
+  "/api/listings",
+  require("./routes/listingRoutes")
+);
+
+app.use(
+  "/api/reports",
+  require("./routes/reportRoutes")
+);
+
+app.use(
+  "/api/admin",
+  require("./routes/adminRoutes")
 );
 
 // Test Route

@@ -16,7 +16,7 @@ function Navbar() {
     <nav className="bg-black text-white px-8 py-4 flex justify-between items-center border-b border-zinc-800">
       {/* Logo */}
       <Link to="/" className="text-2xl font-bold">
-        RoomSync
+        NestMate
       </Link>
 
       {/* Navigation */}
@@ -38,6 +38,10 @@ function Navbar() {
             </Link>
 
             <Link to="/dashboard">Dashboard</Link>
+
+            {user.role === "admin" && (
+              <Link to="/admin">Admin</Link>
+            )}
 
             <button
               onClick={() => {
@@ -62,10 +66,10 @@ function Navbar() {
             <Link to="/login">Login</Link>
 
             <Link
-              to="/signup"
+              to="/register"
               className="bg-white text-black px-4 py-2 rounded"
             >
-              Signup
+              Register
             </Link>
           </>
         )}

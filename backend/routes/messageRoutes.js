@@ -156,10 +156,16 @@ router.get("/conversations", protect, async (req, res) => {
 });
 
 // Get messages by room
-router.get("/:roomId", async (req, res) => {
+router.get("/:roomId", protect, async (req, res) => {
   try {
+    const currentUserId = req.user._id.toString();
+
     const messages = await Message.find({
       roomId: req.params.roomId,
+      $or: [
+        { sender: currentUserId },
+        { receiver: currentUserId },
+      ],
     }).sort({ createdAt: 1 });
 
     res.status(200).json(messages);

@@ -1,42 +1,197 @@
- function Chat() {
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import ChatSidebar from "../../components/chat/ChatSidebar";
+import ChatWindow from "../../components/chat/ChatWindow";
+import { AuthContext } from "../../context/AuthContextValue";
+import { MessageNotificationsContext } from "../../context/MessageNotificationsContextValue";
+import API from "../../services/api";
+import socket from "../../services/socket";
+
+const getUserId = (user) => user?.id || user?._id;
+
+const getRoomId = (firstUserId, secondUserId) =>
+  [firstUserId, secondUserId].sort().join("_");
+
+function Chat() {
+  const { userId: selectedUserId } = useParams();
+  const { user } = useContext(AuthContext);
+  const { markConversationRead, unreadBySender } = useContext(
+    MessageNotificationsContext
+  );
+
+  const currentUserId = getUserId(user);
+  const [conversations, setConversations] = useState([]);
+  const [matches, setMatches] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const messagesEndRef = useRef(null);
+
+  const roomId = useMemo(() => {
+    if (!currentUserId || !selectedUserId) {
+      return "";
+    }
+
+    return getRoomId(currentUserId, selectedUserId);
+  }, [currentUserId, selectedUserId]);
+
+  const receiver = useMemo(() => {
+    const conversation = conversations.find(
+      (item) => item.userId === selectedUserId
+    );
+
+    return (
+      conversation?.user ||
+      matches.find((match) => match._id === selectedUserId) ||
+      null
+    );
+  }, [conversations, matches, selectedUserId]);
+
+  useEffect(() => {
+    if (!currentUserId) {
+      return;
+    }
+
+    socket.emit("userOnline", currentUserId);
+
+    const handleOnlineUsers = (users) => {
+      setOnlineUsers(users);
+    };
+
+    socket.on("onlineUsers", handleOnlineUsers);
+
+    return () => {
+      socket.off("onlineUsers", handleOnlineUsers);
+    };
+  }, [currentUserId]);
+
+  useEffect(() => {
+    const fetchSidebarData = async () => {
+      try {
+        setLoadingConversations(true);
+
+        const [conversationRes, matchesRes] = await Promise.all([
+          API.get("/messages/conversations"),
+          API.get("/auth/users"),
+        ]);
+
+        setConversations(conversationRes.data);
+        setMatches(matchesRes.data);
+      } catch (error) {
+        console.log(error.response?.data?.message || error.message);
+      } finally {
+        setLoadingConversations(false);
+      }
+    };
+
+    fetchSidebarData();
+  }, []);
+
+  useEffect(() => {
+    if (!roomId || !selectedUserId) {
+      setMessages([]);
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchMessages = async () => {
+      try {
+        setLoadingMessages(true);
+
+        const res = await API.get(`/messages/${roomId}`);
+
+        if (isMounted) {
+          setMessages(res.data);
+          markConversationRead(selectedUserId, roomId);
+        }
+      } catch (error) {
+        console.log(error.response?.data?.message || error.message);
+      } finally {
+        if (isMounted) {
+          setLoadingMessages(false);
+        }
+      }
+    };
+
+    socket.emit("joinRoom", roomId);
+    fetchMessages();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [markConversationRead, roomId, selectedUserId]);
+
+  useEffect(() => {
+    if (!roomId) {
+      return;
+    }
+
+    const handleReceiveMessage = (message) => {
+      if (message.roomId !== roomId) {
+        return;
+      }
+
+      setMessages((prevMessages) => {
+        if (prevMessages.some((item) => item._id === message._id)) {
+          return prevMessages;
+        }
+
+        return [...prevMessages, message];
+      });
+
+      if (message.sender === selectedUserId) {
+        markConversationRead(selectedUserId, roomId);
+      }
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [markConversationRead, roomId, selectedUserId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSendMessage = (message) => {
+    if (!roomId || !selectedUserId || !currentUserId) {
+      return;
+    }
+
+    socket.emit("sendMessage", {
+      roomId,
+      message,
+      sender: currentUserId,
+      receiver: selectedUserId,
+      senderName: user?.name,
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
-      
-      <div className="bg-zinc-900 w-[500px] h-[650px] rounded-2xl border border-zinc-800 flex flex-col">
-        
-        {/* Header */}
-        <div className="border-b border-zinc-800 p-5 text-xl font-semibold">
-          💬 Private Chat
-        </div>
+    <div className="h-[calc(100vh-73px)] min-h-[560px] bg-black text-white md:grid md:grid-cols-[360px_1fr]">
+      <ChatSidebar
+        conversations={conversations}
+        loading={loadingConversations}
+        onlineUsers={onlineUsers}
+        selectedUserId={selectedUserId}
+        unreadBySender={unreadBySender}
+      />
 
-        {/* Messages */}
-        <div className="flex-1 p-5 overflow-y-auto space-y-4">
-          
-          <div className="bg-zinc-800 w-fit px-4 py-2 rounded-2xl">
-            Hello 👋
-          </div>
-
-          <div className="bg-white text-black w-fit ml-auto px-4 py-2 rounded-2xl">
-            Hi there 🚀
-          </div>
-
-        </div>
-
-        {/* Input */}
-        <div className="border-t border-zinc-800 p-4 flex gap-3">
-          
-          <input
-            type="text"
-            placeholder="Type message..."
-            className="flex-1 bg-zinc-800 rounded-full px-4 py-3 outline-none"
-          />
-
-          <button className="bg-white text-black px-5 rounded-full font-semibold">
-            Send
-          </button>
-
-        </div>
-      </div>
+      <ChatWindow
+        currentUserId={currentUserId}
+        loading={loadingMessages}
+        messages={messages}
+        messagesEndRef={messagesEndRef}
+        onSendMessage={handleSendMessage}
+        onlineUsers={onlineUsers}
+        receiver={receiver}
+        selectedUserId={selectedUserId}
+      />
     </div>
   );
 }

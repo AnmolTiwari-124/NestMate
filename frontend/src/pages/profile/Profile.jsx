@@ -26,13 +26,7 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
-
-        const res = await API.get("/auth/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await API.get("/auth/me");
 
         setFormData({
           age: res.data.age || "",
@@ -79,8 +73,6 @@ function Profile() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
-
       const updatedData = {
         ...formData,
 
@@ -89,15 +81,7 @@ function Profile() {
           .map((hobby) => hobby.trim()),
       };
 
-      await API.put(
-        "/auth/profile",
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await API.put("/auth/profile", updatedData);
 
       alert("Profile updated successfully");
     } catch (error) {

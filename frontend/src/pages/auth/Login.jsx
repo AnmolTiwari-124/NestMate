@@ -1,6 +1,6 @@
-import { useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import API from "../../services/api";
 
@@ -9,7 +9,8 @@ import { AuthContext } from "../../context/AuthContextValue";
 function Login() {
   const navigate = useNavigate();
 
-  const { login } = useContext(AuthContext);
+  const { authLoading, login, user } = useContext(AuthContext);
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -17,6 +18,18 @@ function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (authLoading || !user) {
+      return;
+    }
+
+    const from = location.state?.from?.pathname;
+    navigate(from || (user.role === "admin" ? "/admin" : "/dashboard"), {
+      replace: true,
+    });
+  }, [authLoading, location.state, navigate, user]);
 
   // Handle Input Change
   const handleChange = (e) => {
@@ -32,6 +45,7 @@ function Login() {
 
     try {
       setLoading(true);
+      setError("");
 
       const res = await API.post(
         "/auth/login",
@@ -39,27 +53,15 @@ function Login() {
       );
 
       // Save user in context
-      login(res.data.user);
+      login(res.data.user, res.data.token);
 
-      // Save token
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
-
-      // IMPORTANT
-      // Save user for chat system
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
-
-      // Redirect
-      navigate("/profile");
+      // Redirect by role
+      const from = location.state?.from?.pathname;
+      navigate(from || (res.data.user.role === "admin" ? "/admin" : "/dashboard"), {
+        replace: true,
+      });
     } catch (error) {
-      console.log(
-        error.response?.data?.message
-      );
+      setError(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -75,12 +77,19 @@ function Login() {
           Login
         </h1>
 
+        {error && (
+          <p className="mb-4 rounded bg-red-500/10 p-3 text-sm text-red-300">
+            {error}
+          </p>
+        )}
+
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
+          required
           className="w-full p-3 mb-4 rounded bg-zinc-800"
         />
 
@@ -90,17 +99,26 @@ function Login() {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
+          required
           className="w-full p-3 mb-4 rounded bg-zinc-800"
         />
 
         <button
           type="submit"
+          disabled={loading}
           className="w-full bg-white text-black p-3 rounded font-semibold"
         >
           {loading
             ? "Loading..."
             : "Login"}
         </button>
+
+        <p className="mt-5 text-center text-sm text-zinc-400">
+          New to NestMate?{" "}
+          <Link to="/register" className="font-semibold text-white">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );
