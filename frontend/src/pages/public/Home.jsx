@@ -12,7 +12,7 @@ function Home() {
       </h1>
 
       <p className="text-zinc-400 max-w-2xl mb-8 text-lg">
-        AI-powered roommate and PG matching platform
+        A roommate matching platform
         for students and professionals.
       </p>
 
