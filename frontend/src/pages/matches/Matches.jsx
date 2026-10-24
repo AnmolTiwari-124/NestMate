@@ -80,153 +80,144 @@ function Matches() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-5xl font-bold mb-10">Your Best Matches</h1>
-      <div className="grid md:grid-cols-3 gap-4 mb-10">
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="Search by name or location"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="bg-zinc-900 p-3 rounded-xl border border-zinc-800"
-        />
+    <div className="app-shell p-6 md:p-10">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-8 text-4xl font-black tracking-tight text-ink md:text-5xl">
+          Your Best Matches
+        </h1>
 
-        {/* Personality */}
-        <select
-          value={personalityFilter}
-          onChange={(e) => setPersonalityFilter(e.target.value)}
-          className="bg-zinc-900 p-3 rounded-xl border border-zinc-800"
-        >
-          <option value="">All Personalities</option>
+        <div className="mb-8 grid gap-4 md:grid-cols-3">
+          <input
+            type="text"
+            placeholder="Search by name or location"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="form-input"
+          />
 
-          <option value="introvert">Introvert</option>
-
-          <option value="extrovert">Extrovert</option>
-
-          <option value="ambivert">Ambivert</option>
-        </select>
-
-        {/* Budget */}
-        <input
-          type="number"
-          placeholder="Max Budget"
-          value={budgetFilter}
-          onChange={(e) => setBudgetFilter(e.target.value)}
-          className="bg-zinc-900 p-3 rounded-xl border border-zinc-800"
-        />
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        {filteredUsers.map((user) => (
-          <div
-            key={user._id}
-            className="relative bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-white transition"
+          <select
+            value={personalityFilter}
+            onChange={(e) => setPersonalityFilter(e.target.value)}
+            className="form-input"
           >
-            {unreadBySender[user._id]?.count > 0 && (
-              <div className="absolute right-4 top-4 flex h-6 min-w-6 items-center justify-center rounded-full bg-green-500 px-2 text-xs font-bold text-black">
-                {unreadBySender[user._id].count}
-              </div>
-            )}
+            <option value="">All Personalities</option>
+            <option value="introvert">Introvert</option>
+            <option value="extrovert">Extrovert</option>
+            <option value="ambivert">Ambivert</option>
+          </select>
 
-            {/* Header */}
-            <div className="flex items-center justify-between gap-3 mb-4 pr-8">
-              <h2 className="text-2xl font-bold">{user.name}</h2>
-              <div className="flex items-center gap-2 mt-1">
-                <div
-                  className={`w-3 h-3 rounded-full ${onlineUsers.includes(user._id)
-                      ? "bg-green-500"
-                      : "bg-zinc-600"
-                    }`}
-                />
+          <input
+            type="number"
+            placeholder="Max Budget"
+            value={budgetFilter}
+            onChange={(e) => setBudgetFilter(e.target.value)}
+            className="form-input"
+          />
+        </div>
 
-                <span className="text-sm text-zinc-400">
-                  {onlineUsers.includes(user._id)
-                    ? "Online"
-                    : "Offline"}
-                </span>
-              </div>
+        <div className="grid gap-6 md:grid-cols-3">
+          {filteredUsers.map((user) => (
+            <div
+              key={user._id}
+              className="relative rounded-3xl border border-primary/15 bg-white p-6 shadow-[0_10px_30px_rgba(249,115,22,0.06)] transition hover:-translate-y-0.5 hover:border-primary/30"
+            >
+              {unreadBySender[user._id]?.count > 0 && (
+                <div className="absolute right-4 top-4 flex h-6 min-w-6 items-center justify-center rounded-full bg-secondary px-2 text-xs font-bold text-white">
+                  {unreadBySender[user._id].count}
+                </div>
+              )}
 
-              <div className="bg-green-500 text-black px-3 py-1 rounded-full font-bold">
-                {user.compatibilityScore}%
-              </div>
-            </div>
+              <div className="mb-4 flex items-start justify-between gap-3 pr-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-ink">{user.name}</h2>
+                  <p className="mt-1 text-sm text-muted">{user.occupation}</p>
+                </div>
 
-            {/* Basic Info */}
-            <p className="text-zinc-400 mb-2">{user.occupation}</p>
-
-            <p className="mb-2">📍 {user.location}</p>
-
-            <p className="mb-2">💰 Budget: ₹{user.budget}</p>
-
-            <p className="mb-2">Personality: {user.personality}</p>
-
-            {/* Bio */}
-            <p className="text-zinc-300 mt-4">{user.bio}</p>
-
-            {/* Common Interests */}
-            <div className="mt-5">
-              <h3 className="font-semibold mb-2">Why This Match?</h3>
-
-              <div className="space-y-2">
-                {user.insights?.map((insight, index) => (
-                  <p key={index} className="text-sm text-green-400">
-                    ✔ {insight}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <h3 className="font-semibold mb-2">Common Interests</h3>
-
-              <div className="flex flex-wrap gap-2">
-                {user.commonHobbies?.length > 0 ? (
-                  user.commonHobbies.map((hobby, index) => (
-                    <span
-                      key={index}
-                      className="bg-zinc-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {hobby}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-zinc-500 text-sm">No common hobbies</p>
-                )}
-              </div>
-            </div>
-
-            {/* Habits */}
-            <div className="mt-5 text-sm text-zinc-400 space-y-1">
-              <p>🛏 Sleep: {user.habits?.sleepTime}</p>
-
-              <p>🧹 Cleanliness: {user.habits?.cleanliness}</p>
-
-              <p>🍽 Food: {user.habits?.foodPreference}</p>
-            </div>
-            <div className="mt-6 grid grid-cols-[1fr_auto] gap-2">
-              <Link
-                to={`/chat/${user._id}`}
-                className="relative block bg-white text-black text-center py-3 rounded-xl font-semibold"
-              >
-                Chat
-                {unreadBySender[user._id]?.count > 0 && (
-                  <span className="absolute right-4 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-green-500 px-1 text-xs font-bold text-black ring-2 ring-white">
-                    {unreadBySender[user._id].count}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`h-3 w-3 rounded-full ${onlineUsers.includes(user._id) ? "bg-secondary" : "bg-primary/40"}`}
+                  />
+                  <span className="text-xs font-medium text-muted">
+                    {onlineUsers.includes(user._id) ? "Online" : "Offline"}
                   </span>
-                )}
-              </Link>
+                </div>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => handleReportUser(user)}
-                className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-200 hover:border-white"
-              >
-                Report
-              </button>
+              <div className="mb-4 inline-flex rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+                {user.compatibilityScore}% match
+              </div>
+
+              <p className="mb-2 text-sm text-muted">📍 {user.location}</p>
+              <p className="mb-2 text-sm text-muted">💰 Budget: ₹{user.budget}</p>
+              <p className="mb-2 text-sm text-muted">Personality: {user.personality}</p>
+
+              <p className="mt-4 text-sm leading-6 text-ink">{user.bio}</p>
+
+              <div className="mt-5">
+                <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-primary">
+                  Why This Match?
+                </h3>
+
+                <div className="space-y-2">
+                  {user.insights?.map((insight, index) => (
+                    <p key={index} className="text-sm text-secondary">
+                      ✔ {insight}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5">
+                <h3 className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-primary">
+                  Common Interests
+                </h3>
+
+                <div className="flex flex-wrap gap-2">
+                  {user.commonHobbies?.length > 0 ? (
+                    user.commonHobbies.map((hobby, index) => (
+                      <span
+                        key={index}
+                        className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                      >
+                        {hobby}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted">No common hobbies</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-1 text-sm text-muted">
+                <p>🛏 Sleep: {user.habits?.sleepTime}</p>
+                <p>🧹 Cleanliness: {user.habits?.cleanliness}</p>
+                <p>🍽 Food: {user.habits?.foodPreference}</p>
+              </div>
+
+              <div className="mt-6 grid grid-cols-[1fr_auto] gap-2">
+                <Link
+                  to={`/chat/${user._id}`}
+                  className="relative block rounded-xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-primary-dark"
+                >
+                  Chat
+                  {unreadBySender[user._id]?.count > 0 && (
+                    <span className="absolute right-3 top-1/2 flex h-5 min-w-5 -translate-y-1/2 items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-bold text-white ring-2 ring-white">
+                      {unreadBySender[user._id].count}
+                    </span>
+                  )}
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => handleReportUser(user)}
+                  className="rounded-xl border border-primary/20 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-primary hover:text-primary"
+                >
+                  Report
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

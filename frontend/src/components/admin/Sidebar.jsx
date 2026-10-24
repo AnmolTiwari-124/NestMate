@@ -14,10 +14,10 @@ function Sidebar() {
   const navigate = useNavigate();
 
   return (
-    <aside className="border-r border-zinc-800 bg-black px-4 py-5 lg:min-h-screen">
+    <aside className="border-r border-primary/15 bg-white px-4 py-5 lg:min-h-screen">
       <div className="mb-8 px-2">
-        <p className="text-xl font-bold text-white">NestMate Admin</p>
-        <p className="text-sm text-zinc-500">Control center</p>
+        <p className="text-xl font-bold text-ink">NestMate Admin</p>
+        <p className="text-sm text-muted">Control center</p>
       </div>
 
       <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
@@ -29,8 +29,8 @@ function Sidebar() {
             className={({ isActive }) =>
               `rounded-xl px-3 py-2 text-sm font-medium transition ${
                 isActive
-                  ? "bg-white text-black"
-                  : "text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                  ? "bg-primary text-white"
+                  : "text-muted hover:bg-primary/10 hover:text-primary"
               }`
             }
           >
@@ -46,7 +46,7 @@ function Sidebar() {
             logout();
             navigate("/login");
           }}
-          className="mt-6 w-full rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-zinc-200"
+          className="btn-primary mt-6 w-full"
         >
           Logout
         </button>

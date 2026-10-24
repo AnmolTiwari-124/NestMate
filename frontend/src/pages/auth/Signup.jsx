@@ -55,17 +55,17 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-xl w-full max-w-md"
-      >
-        <h1 className="text-3xl font-bold mb-6">
-          Register
-        </h1>
+    <div className="app-shell flex items-center justify-center px-4 py-10">
+      <form onSubmit={handleSubmit} className="surface-card w-full max-w-md p-8">
+        <div className="mb-6 text-center">
+          <h1 className="text-3xl font-bold text-ink">Register</h1>
+          <p className="mt-2 text-sm text-muted">
+            Create your NestMate profile.
+          </p>
+        </div>
 
         {error && (
-          <p className="mb-4 rounded bg-red-500/10 p-3 text-sm text-red-300">
+          <p className="mb-4 rounded-xl border border-primary/20 bg-primary/10 p-3 text-sm font-medium text-primary">
             {error}
           </p>
         )}
@@ -77,7 +77,7 @@ function Signup() {
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          className="form-input mb-4"
         />
 
         <input
@@ -87,7 +87,7 @@ function Signup() {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          className="form-input mb-4"
         />
 
         <input
@@ -98,20 +98,16 @@ function Signup() {
           onChange={handleChange}
           required
           minLength={6}
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          className="form-input mb-4"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-white text-black p-3 rounded font-semibold"
-        >
+        <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? "Loading..." : "Register"}
         </button>
 
-        <p className="mt-5 text-center text-sm text-zinc-400">
-          Already have an account?{" "}
-          <Link to="/login" className="font-semibold text-white">
+        <p className="mt-5 text-center text-sm text-muted">
+          Already have an account? {" "}
+          <Link to="/login" className="font-semibold text-primary hover:text-primary-dark">
             Login
           </Link>
         </p>

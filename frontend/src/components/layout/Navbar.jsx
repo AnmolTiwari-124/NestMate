@@ -13,66 +13,67 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <nav className="bg-black text-white px-8 py-4 flex justify-between items-center border-b border-zinc-800">
-      {/* Logo */}
-      <Link to="/" className="text-2xl font-bold">
-        NestMate
-      </Link>
+    <nav className="border-b border-primary/15 bg-white/95 px-8 py-4 shadow-sm backdrop-blur-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <Link to="/" className="text-2xl font-extrabold tracking-tight text-ink">
+          NestMate
+        </Link>
 
-      {/* Navigation */}
-      <div className="flex items-center gap-6">
-        {user ? (
-          <>
-            <Link to="/matches">Matches</Link>
+        <div className="flex items-center gap-5 text-sm font-medium text-muted">
+          {user ? (
+            <>
+              <Link to="/matches" className="transition hover:text-primary">
+                Matches
+              </Link>
 
-            <Link
-              to="/chats"
-              className="relative"
-            >
-              Chats
-              {totalUnread > 0 && (
-                <span className="absolute -right-4 -top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-green-500 px-1 text-xs font-bold text-black">
-                  {totalUnread}
-                </span>
+              <Link to="/chats" className="relative transition hover:text-primary">
+                Chats
+                {totalUnread > 0 && (
+                  <span className="absolute -right-4 -top-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-bold text-white">
+                    {totalUnread}
+                  </span>
+                )}
+              </Link>
+
+              <Link to="/dashboard" className="transition hover:text-primary">
+                Dashboard
+              </Link>
+
+              {user.role === "admin" && (
+                <Link to="/admin" className="transition hover:text-primary">
+                  Admin
+                </Link>
               )}
-            </Link>
 
-            <Link to="/dashboard">Dashboard</Link>
+              <button
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+                className="btn-ghost"
+              >
+                Logout
+              </button>
 
-            {user.role === "admin" && (
-              <Link to="/admin">Admin</Link>
-            )}
+              <Link
+                to="/profile"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-lg font-bold text-white shadow-sm transition hover:bg-primary-dark"
+              >
+                {user?.name?.charAt(0).toUpperCase()}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="transition hover:text-primary">
+                Login
+              </Link>
 
-            <button
-              onClick={() => {
-                logout();
-                navigate("/login");
-              }}
-              className="bg-white text-black px-4 py-2 rounded"
-            >
-              Logout
-            </button>
-
-            {/* Profile Circle */}
-            <Link
-              to="/profile"
-              className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold text-lg"
-            >
-              {user?.name?.charAt(0).toUpperCase()}
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-
-            <Link
-              to="/register"
-              className="bg-white text-black px-4 py-2 rounded"
-            >
-              Register
-            </Link>
-          </>
-        )}
+              <Link to="/register" className="btn-primary">
+                Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

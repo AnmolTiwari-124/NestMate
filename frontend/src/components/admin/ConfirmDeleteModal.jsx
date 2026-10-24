@@ -4,10 +4,10 @@ function ConfirmDeleteModal({ onCancel, onConfirm, user }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6 text-white shadow-xl">
-        <h2 className="text-2xl font-bold">Delete user?</h2>
-        <p className="mt-3 text-sm leading-6 text-zinc-400">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1F2937]/70 px-4">
+      <div className="w-full max-w-md rounded-2xl border border-primary/15 bg-white p-6 text-ink shadow-[0_10px_30px_rgba(31,41,55,0.2)]">
+        <h2 className="text-2xl font-bold text-ink">Delete user?</h2>
+        <p className="mt-3 text-sm leading-6 text-muted">
           This will permanently delete {user.name} and their related data. This
           action cannot be undone.
         </p>
@@ -16,14 +16,14 @@ function ConfirmDeleteModal({ onCancel, onConfirm, user }) {
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:border-white"
+            className="btn-ghost"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-400"
+            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-dark"
           >
             Delete
           </button>

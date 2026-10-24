@@ -17,7 +17,7 @@ function Users() {
 
   const currentUserId = currentUser?.id || currentUser?._id;
 
-  const fetchUsers = async () => {
+  const refreshUsers = async () => {
     try {
       setLoading(true);
       setError("");
@@ -33,7 +33,11 @@ function Users() {
   };
 
   useEffect(() => {
-    fetchUsers();
+    const loadUsers = async () => {
+      await refreshUsers();
+    };
+
+    void loadUsers();
   }, []);
 
   const filteredUsers = useMemo(() => {
@@ -60,14 +64,14 @@ function Users() {
       setError("");
       await API.delete(`/admin/users/${userToDelete._id}`);
       setUserToDelete(null);
-      fetchUsers();
+      await refreshUsers();
     } catch (err) {
       setError(err.response?.data?.message || "Unable to delete user");
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white lg:grid lg:grid-cols-[260px_1fr]">
+    <div className="min-h-screen bg-canvas text-ink lg:grid lg:grid-cols-[260px_1fr]">
       <Sidebar />
 
       <main>
@@ -79,17 +83,17 @@ function Users() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users by name or email"
-            className="mb-5 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-white"
+            className="form-input mb-5"
           />
 
           {error && (
-            <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
+            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-medium text-primary">
               {error}
             </div>
           )}
 
           {loading ? (
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-zinc-500">
+            <div className="rounded-2xl border border-primary/15 bg-white p-8 text-muted shadow-sm">
               Loading users...
             </div>
           ) : (

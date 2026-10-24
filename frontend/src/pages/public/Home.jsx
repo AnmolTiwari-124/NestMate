@@ -6,41 +6,41 @@ function Home() {
   const { user } = useContext(AuthContext);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-6xl font-bold mb-6">
-        Find Your Perfect Roommate
-      </h1>
+    <div className="app-shell flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+          Smart roommate matching for modern living
+        </div>
 
-      <p className="text-zinc-400 max-w-2xl mb-8 text-lg">
-        A roommate matching platform
-        for students and professionals.
-      </p>
+        <h1 className="mb-6 text-5xl font-black tracking-tight text-ink md:text-7xl">
+          Find Your Perfect Roommate
+        </h1>
 
-      <div className="flex gap-4">
-        {user ? (
-          <Link
-            to={user.role === "admin" ? "/admin" : "/dashboard"}
-            className="bg-white text-black px-6 py-3 rounded font-semibold"
-          >
-            Go to Dashboard
-          </Link>
-        ) : (
-          <>
+        <p className="mx-auto mb-8 max-w-2xl text-lg leading-8 text-muted">
+          A roommate matching platform for students and professionals seeking
+          safety, compatibility, and a home that feels right.
+        </p>
+
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {user ? (
             <Link
-              to="/register"
-              className="bg-white text-black px-6 py-3 rounded font-semibold"
+              to={user.role === "admin" ? "/admin" : "/dashboard"}
+              className="btn-primary"
             >
-              Register
+              Go to Dashboard
             </Link>
+          ) : (
+            <>
+              <Link to="/register" className="btn-primary">
+                Register
+              </Link>
 
-            <Link
-              to="/login"
-              className="border border-white px-6 py-3 rounded"
-            >
-              Login
-            </Link>
-          </>
-        )}
+              <Link to="/login" className="btn-ghost">
+                Login
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

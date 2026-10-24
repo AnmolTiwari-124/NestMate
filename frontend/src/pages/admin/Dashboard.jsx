@@ -26,7 +26,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white lg:grid lg:grid-cols-[260px_1fr]">
+    <div className="min-h-screen bg-canvas text-ink lg:grid lg:grid-cols-[260px_1fr]">
       <Sidebar />
 
       <main>
@@ -34,13 +34,13 @@ function Dashboard() {
 
         <section className="p-5">
           {error && (
-            <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
+            <div className="mb-4 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-medium text-primary">
               {error}
             </div>
           )}
 
           {loading ? (
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-8 text-zinc-500">
+            <div className="rounded-2xl border border-primary/15 bg-white p-8 text-muted shadow-sm">
               Loading dashboard...
             </div>
           ) : (

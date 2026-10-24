@@ -68,17 +68,17 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-zinc-900 p-8 rounded-xl w-full max-w-md"
-      >
-        <h1 className="text-3xl font-bold mb-6">
-          Login
-        </h1>
+    <div className="app-shell flex items-center justify-center px-4 py-10">
+      <form onSubmit={handleSubmit} className="surface-card w-full max-w-md p-8">
+        <div className="mb-6 text-center">
+          <h1 className="text-3xl font-bold text-ink">Login</h1>
+          <p className="mt-2 text-sm text-muted">
+            Welcome back to NestMate.
+          </p>
+        </div>
 
         {error && (
-          <p className="mb-4 rounded bg-red-500/10 p-3 text-sm text-red-300">
+          <p className="mb-4 rounded-xl border border-primary/20 bg-primary/10 p-3 text-sm font-medium text-primary">
             {error}
           </p>
         )}
@@ -90,7 +90,7 @@ function Login() {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          className="form-input mb-4"
         />
 
         <input
@@ -100,22 +100,16 @@ function Login() {
           value={formData.password}
           onChange={handleChange}
           required
-          className="w-full p-3 mb-4 rounded bg-zinc-800"
+          className="form-input mb-4"
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-white text-black p-3 rounded font-semibold"
-        >
-          {loading
-            ? "Loading..."
-            : "Login"}
+        <button type="submit" disabled={loading} className="btn-primary w-full">
+          {loading ? "Loading..." : "Login"}
         </button>
 
-        <p className="mt-5 text-center text-sm text-zinc-400">
-          New to NestMate?{" "}
-          <Link to="/register" className="font-semibold text-white">
+        <p className="mt-5 text-center text-sm text-muted">
+          New to NestMate? {" "}
+          <Link to="/register" className="font-semibold text-primary hover:text-primary-dark">
             Register
           </Link>
         </p>

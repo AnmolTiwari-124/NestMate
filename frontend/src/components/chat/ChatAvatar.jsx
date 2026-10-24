@@ -19,19 +19,19 @@ function ChatAvatar({ user, isOnline = false, size = "md" }) {
         <img
           src={user.profileImage}
           alt={user.name || "User"}
-          className={`${sizeClasses[size]} rounded-full object-cover`}
+          className={`${sizeClasses[size]} rounded-full object-cover ring-2 ring-primary/10`}
         />
       ) : (
         <div
-          className={`${sizeClasses[size]} flex items-center justify-center rounded-full bg-zinc-800 font-semibold text-white ring-1 ring-zinc-700`}
+          className={`${sizeClasses[size]} flex items-center justify-center rounded-full bg-primary/10 font-semibold text-primary ring-1 ring-primary/20`}
         >
           {initials}
         </div>
       )}
 
       <span
-        className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950 ${
-          isOnline ? "bg-emerald-400" : "bg-zinc-600"
+        className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white ${
+          isOnline ? "bg-secondary" : "bg-primary/40"
         }`}
       />
     </div>

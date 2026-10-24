@@ -9,7 +9,7 @@ function AdminProtectedRoute({ children }) {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="app-shell flex items-center justify-center text-sm font-medium text-muted">
         Loading...
       </div>
     );

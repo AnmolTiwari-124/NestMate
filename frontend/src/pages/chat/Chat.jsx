@@ -91,7 +91,6 @@ function Chat() {
 
   useEffect(() => {
     if (!roomId || !selectedUserId) {
-      setMessages([]);
       return;
     }
 
@@ -117,7 +116,7 @@ function Chat() {
     };
 
     socket.emit("joinRoom", roomId);
-    fetchMessages();
+    void fetchMessages();
 
     return () => {
       isMounted = false;
@@ -173,7 +172,7 @@ function Chat() {
   };
 
   return (
-    <div className="h-[calc(100vh-73px)] min-h-[560px] bg-black text-white md:grid md:grid-cols-[360px_1fr]">
+    <div className="h-[calc(100vh-73px)] min-h-[560px] bg-canvas text-ink md:grid md:grid-cols-[360px_1fr]">
       <ChatSidebar
         conversations={conversations}
         loading={loadingConversations}

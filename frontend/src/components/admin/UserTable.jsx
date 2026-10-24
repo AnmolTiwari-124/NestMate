@@ -1,9 +1,9 @@
 function UserTable({ currentUserId, onDelete, users }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+    <div className="overflow-hidden rounded-2xl border border-primary/15 bg-white shadow-[0_10px_30px_rgba(249,115,22,0.05)]">
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm">
-          <thead className="border-b border-zinc-800 text-left text-xs font-semibold uppercase text-zinc-500">
+          <thead className="border-b border-primary/15 text-left text-xs font-semibold uppercase tracking-[0.08em] text-muted">
             <tr>
               <th className="px-4 py-4">Name</th>
               <th className="px-4 py-4">Email</th>
@@ -11,23 +11,23 @@ function UserTable({ currentUserId, onDelete, users }) {
               <th className="px-4 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-primary/10">
             {users.map((user) => {
               const isCurrentAdmin =
                 currentUserId === user._id || currentUserId === user.id;
 
               return (
                 <tr key={user._id}>
-                  <td className="px-4 py-4 font-semibold text-white">
+                  <td className="px-4 py-4 font-semibold text-ink">
                     {user.name}
                     {isCurrentAdmin && (
-                      <span className="ml-2 rounded-full bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-400">
+                      <span className="ml-2 rounded-full bg-secondary/10 px-2 py-1 text-xs font-medium text-secondary">
                         You
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-4 text-zinc-400">{user.email}</td>
-                  <td className="px-4 py-4 text-zinc-400">
+                  <td className="px-4 py-4 text-muted">{user.email}</td>
+                  <td className="px-4 py-4 text-muted">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-4 text-right">
@@ -35,7 +35,7 @@ function UserTable({ currentUserId, onDelete, users }) {
                       type="button"
                       disabled={isCurrentAdmin}
                       onClick={() => onDelete(user)}
-                      className="rounded-xl border border-red-500/40 px-4 py-2 text-sm font-semibold text-red-300 transition hover:border-red-400 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:text-zinc-600 disabled:hover:bg-transparent"
+                      className="rounded-xl border border-primary/20 bg-white px-4 py-2 text-sm font-semibold text-primary transition hover:border-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:border-primary/10 disabled:text-muted disabled:hover:bg-transparent"
                     >
                       Delete
                     </button>
@@ -46,7 +46,7 @@ function UserTable({ currentUserId, onDelete, users }) {
 
             {users.length === 0 && (
               <tr>
-                <td className="px-4 py-8 text-center text-zinc-500" colSpan="4">
+                <td className="px-4 py-8 text-center text-muted" colSpan="4">
                   No users found.
                 </td>
               </tr>

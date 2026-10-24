@@ -6,10 +6,10 @@ function Navbar({ title }) {
   const { user } = useContext(AuthContext);
 
   return (
-    <header className="border-b border-zinc-800 bg-black px-6 py-5">
+    <header className="border-b border-primary/15 bg-white px-6 py-5 shadow-sm">
       <div>
-        <h1 className="text-3xl font-bold text-white">{title}</h1>
-        <p className="mt-1 text-sm text-zinc-500">{user?.email}</p>
+        <h1 className="text-3xl font-black tracking-tight text-ink">{title}</h1>
+        <p className="mt-1 text-sm text-muted">{user?.email}</p>
       </div>
     </header>
   );

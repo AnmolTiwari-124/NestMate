@@ -92,23 +92,20 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-10">
-      <div className="max-w-3xl mx-auto bg-zinc-900 p-8 rounded-xl">
-        <h1 className="text-4xl font-bold mb-8">
+    <div className="app-shell p-10">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-primary/15 bg-white p-8 shadow-[0_10px_30px_rgba(249,115,22,0.08)]">
+        <h1 className="mb-8 text-4xl font-black tracking-tight text-ink">
           Edit Profile
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           <input
             type="number"
             name="age"
             placeholder="Age"
             value={formData.age}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           />
 
           <input
@@ -117,7 +114,7 @@ function Profile() {
             placeholder="Occupation"
             value={formData.occupation}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           />
 
           <input
@@ -126,7 +123,7 @@ function Profile() {
             placeholder="Location"
             value={formData.location}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           />
 
           <input
@@ -135,7 +132,7 @@ function Profile() {
             placeholder="Budget"
             value={formData.budget}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           />
 
           <textarea
@@ -143,7 +140,7 @@ function Profile() {
             placeholder="Bio"
             value={formData.bio}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input min-h-[120px] resize-none"
           />
 
           <input
@@ -152,39 +149,23 @@ function Profile() {
             placeholder="Hobbies (comma separated)"
             value={formData.hobbies}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           />
 
           <select
             name="personality"
             value={formData.personality}
             onChange={handleChange}
-            className="w-full p-3 rounded bg-zinc-800"
+            className="form-input"
           >
-            <option value="">
-              Select Personality
-            </option>
-
-            <option value="introvert">
-              Introvert
-            </option>
-
-            <option value="extrovert">
-              Extrovert
-            </option>
-
-            <option value="ambivert">
-              Ambivert
-            </option>
+            <option value="">Select Personality</option>
+            <option value="introvert">Introvert</option>
+            <option value="extrovert">Extrovert</option>
+            <option value="ambivert">Ambivert</option>
           </select>
 
-          <button
-            type="submit"
-            className="w-full bg-white text-black p-3 rounded font-semibold"
-          >
-            {loading
-              ? "Saving..."
-              : "Save Profile"}
+          <button type="submit" className="btn-primary w-full">
+            {loading ? "Saving..." : "Save Profile"}
           </button>
         </form>
       </div>

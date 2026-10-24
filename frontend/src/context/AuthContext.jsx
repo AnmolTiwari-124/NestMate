@@ -24,7 +24,7 @@ const getStoredUser = () => {
 
   try {
     return normalizeUser(JSON.parse(storedUser));
-  } catch (error) {
+  } catch {
     localStorage.removeItem("user");
     return null;
   }
@@ -70,7 +70,7 @@ function AuthProvider({ children }) {
       try {
         const res = await API.get("/auth/me");
         login(res.data, token);
-      } catch (error) {
+      } catch {
         clearSession();
       } finally {
         setAuthLoading(false);
